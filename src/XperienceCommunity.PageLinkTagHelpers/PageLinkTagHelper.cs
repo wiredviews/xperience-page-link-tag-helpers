@@ -1,3 +1,8 @@
+using System.Collections.Specialized;
+using CMS.DocumentEngine;
+using Kentico.Content.Web.Mvc;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+
 namespace XperienceCommunity.PageLinkTagHelpers;
 
 [HtmlTargetElement("a", Attributes = "xp-page-link")]
@@ -30,17 +35,17 @@ public class PageLinkTagHelper : TagHelper
 
         var pages = await pageRetriever
             .RetrieveAsync<TreeNode>(
-                q => q.WhereEquals(nameof(TreeNode), Page.NodeGuid),
-                cache => cache.Key($"page-link|{Page.NodeGuid}"));
+                q => q.WhereEquals(nameof(TreeNode), Page.NodeGUID),
+                cache => cache.Key($"page-link|{Page.NodeGUID}"));
 
-        var page = pages.FirstOrDefault();
+        var linkedPage = pages.FirstOrDefault();
 
-        if (page is null)
+        if (linkedPage is null)
         {
             return;
         }
 
-        var pageUrl = urlRetriever.Retrieve(page);
+        var pageUrl = urlRetriever.Retrieve(linkedPage);
 
         string querystring = QueryParams is not null
             ? QueryParams.ToQueryString()
@@ -56,7 +61,7 @@ public class PageLinkTagHelper : TagHelper
         if (string.IsNullOrWhiteSpace(childContent.GetContent()))
         {
             string linkText = string.IsNullOrWhiteSpace(LinkText)
-                ? page.DocumentName
+                ? linkedPage.DocumentName
                 : LinkText;
 
             _ = output.PreContent.SetContent(linkText);
