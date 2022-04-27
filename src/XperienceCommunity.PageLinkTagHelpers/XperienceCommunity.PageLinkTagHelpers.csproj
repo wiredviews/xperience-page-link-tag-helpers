@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+      <Description>
+        
+      </Description>
+
+      <Product>XperienceCommunity.PageLinkTagHelpers</Product>
+      <Title>$(Product)</Title>
+      <PackageTags>$(PackageTags)</PackageTags>
+    </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+</Project>
