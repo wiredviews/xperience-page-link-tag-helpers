@@ -48,7 +48,53 @@ This package is compatible with ASP.NET Core 6 applications or libraries integra
    }
    ```
 
-1. (optional) Add your `LinkablePage` class's namespace to your `_ViewImports.cshtml` file:
+1. (optional) Add your `LinkablePage` class's namespace to your `_ViewImports.cshtml` file.
+
+1. (recommended) Create a global event handler to protect the Pages referenced by your `ILinkablePage` implementation:
+
+```csharp
+using System;
+using System.Linq;
+using CMS;
+using CMS.Core;
+using CMS.DataEngine;
+using CMS.DocumentEngine;
+
+[assembly: RegisterModule(typeof(LinkablePageProtectionModule))]
+
+namespace Sandbox
+{
+    /// <summary>
+    /// Protects <see cref="LinkablePage"/> instances that represent Pages in the content tree with hard coded <see cref="TreeNode.NodeGUID"/> values.
+    /// </summary>
+    public class LinkablePageProtectionModule : Module
+    {
+        public LinkablePageProtectionModule() : base(nameof(LinkablePageProtectionModule)) { }
+
+        protected override void OnInit()
+        {
+            base.OnInit();
+
+            DocumentEvents.Delete.Before += Delete_Before;
+        }
+
+        private void Delete_Before(object sender, DocumentEventArgs e)
+        {
+            if (LinkablePage.Pages.Any(p => p.NodeGuid == e.Node.NodeGUID))
+            {
+                e.Cancel();
+
+                var log = Service.Resolve<IEventLogService>();
+
+                log.LogError(
+                     nameof(LinkablePageProtectionModule),
+                     "DELETE_PAGE",
+                     $"Cannot delete Linkable Page [{e.Node.NodeAliasPath}], as it might be in use. Please first remove the Linkable Page in the application code and re-deploy the application.");
+            }
+        }
+    }
+}
+```
 
 ## Usage
 
@@ -64,7 +110,7 @@ This package is compatible with ASP.NET Core 6 applications or libraries integra
 This will generate the following HTML:
 
 ```html
-<a href="/contact-us?a=b">Contactus for help!</a>
+<a href="/contact-us?a=b">Contact us for help!</a>
 ```
 
 ## References
@@ -74,3 +120,5 @@ This will generate the following HTML:
 - [ASP.NET Core Tag Helper](https://docs.microsoft.com/en-US/aspnet/core/mvc/views/tag-helpers/intro?view=aspnetcore-6.0)
 
 ### Kentico Xperience
+
+- [Document Events](https://docs.xperience.io/custom-development/handling-global-events/reference-global-system-events#ReferenceGlobalsystemevents-DocumentEvents)
