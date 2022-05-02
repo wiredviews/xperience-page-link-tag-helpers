@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XperienceCommunity.PageLinkTagHelpers", "src\XperienceCommunity.PageLinkTagHelpers\XperienceCommunity.PageLinkTagHelpers.csproj", "{8CA4936A-ABCD-4EC8-A5FF-DBB5BD7CFA4B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8EF4BD54-E914-4E49-9648-CF829E910BF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XperienceCommunity.PageLinkTagHelpers.Tests", "tests\XperienceCommunity.PageLinkTagHelpers.Tests\XperienceCommunity.PageLinkTagHelpers.Tests.csproj", "{055BB406-0178-4556-8523-CCFDF6F4779B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,12 @@ Global
 		{8CA4936A-ABCD-4EC8-A5FF-DBB5BD7CFA4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CA4936A-ABCD-4EC8-A5FF-DBB5BD7CFA4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CA4936A-ABCD-4EC8-A5FF-DBB5BD7CFA4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{055BB406-0178-4556-8523-CCFDF6F4779B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{055BB406-0178-4556-8523-CCFDF6F4779B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{055BB406-0178-4556-8523-CCFDF6F4779B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{055BB406-0178-4556-8523-CCFDF6F4779B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{055BB406-0178-4556-8523-CCFDF6F4779B} = {8EF4BD54-E914-4E49-9648-CF829E910BF0}
 	EndGlobalSection
 EndGlobal

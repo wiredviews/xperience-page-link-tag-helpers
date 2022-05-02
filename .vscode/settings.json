@@ -17,5 +17,7 @@
 
   "omnisharp.defaultLaunchSolution": "XperienceCommunity.PageLinkTagHelpers.sln",
   "omnisharp.useEditorFormattingSettings": true,
-  "omnisharp.enableImportCompletion": true
+  "omnisharp.enableImportCompletion": true,
+
+  "dotnet-test-explorer.testProjectPath": "**/*Tests.@(csproj|vbproj|fsproj)"
 }

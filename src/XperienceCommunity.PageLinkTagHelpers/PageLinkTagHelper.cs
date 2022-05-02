@@ -1,87 +1,110 @@
+using System;
 using System.Collections.Specialized;
+using System.Linq;
+using System.Threading.Tasks;
 using CMS.Core;
 using CMS.DocumentEngine;
 using CMS.DocumentEngine.Routing;
 using Kentico.Content.Web.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace XperienceCommunity.PageLinkTagHelpers;
-
-/// <summary>
-/// Generates a link to a page based on the page's <see cref="TreeNode.NodeGUID"/>.
-/// </summary>
-[HtmlTargetElement("a", Attributes = "xp-page-link")]
-public class PageLinkTagHelper : TagHelper
+namespace XperienceCommunity.PageLinkTagHelpers
 {
-    private readonly IPageRetriever pageRetriever;
-    private readonly IPageUrlRetriever urlRetriever;
-    private readonly IEventLogService log;
 
-
-    [HtmlAttributeName("xp-page-link")]
-    public ILinkablePage? Page { get; set; }
-
-    [HtmlAttributeName("xp-page-link-text")]
-    public string? LinkText { get; set; } = "";
-
-    [HtmlAttributeName("xp-page-link-query-params")]
-    public NameValueCollection? QueryParams { get; set; }
-
-    public PageLinkTagHelper(IPageRetriever pageRetriever, IPageUrlRetriever urlRetriever, IEventLogService log)
+    /// <summary>
+    /// Generates a link to a page based on the page's <see cref="TreeNode.NodeGUID"/>.
+    /// </summary>
+    [HtmlTargetElement("a", Attributes = "xp-page-link")]
+    public class PageLinkTagHelper : TagHelper
     {
-        this.log = log;
-        this.pageRetriever = pageRetriever;
-        this.urlRetriever = urlRetriever;
-    }
+        private readonly IPageRetriever pageRetriever;
+        private readonly IPageUrlRetriever urlRetriever;
+        private readonly IEventLogService log;
 
-    public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
-    {
-        if (Page is null)
+
+        [HtmlAttributeName("xp-page-link")]
+        public ILinkablePage? Page { get; set; }
+
+        [HtmlAttributeName("xp-page-link-text")]
+        public string? LinkText { get; set; } = "";
+
+        [HtmlAttributeName("xp-page-link-query-params")]
+        public NameValueCollection? QueryParams { get; set; }
+
+        public PageLinkTagHelper(IPageRetriever pageRetriever, IPageUrlRetriever urlRetriever, IEventLogService log)
         {
-            return;
+            this.log = log;
+            this.pageRetriever = pageRetriever;
+            this.urlRetriever = urlRetriever;
         }
 
-        var pages = await pageRetriever
-            .RetrieveAsync<TreeNode>(
-                query => query
-                    .WhereEquals(nameof(TreeNode), Page.NodeGUID)
-                    .Columns(nameof(TreeNode.NodeID))
-                    .WithPageUrlPaths(),
-                cache => cache.Key($"page-link|{Page.NodeGUID}"));
-
-        var linkedPage = pages.FirstOrDefault();
-
-        if (linkedPage is null)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            log.LogWarning(
-                nameof(PageLinkTagHelper), 
-                $"MISSING_PAGE_{Page.NodeGUID}", // Include the NodeGUID in the EventCode because it is part of the cache key for "ONLY_ONCE" events
-                $"Could not find Page [{Page.NodeGUID}]", loggingPolicy: LoggingPolicy.ONLY_ONCE);
+            if (Page is null)
+            {
+                log.LogError(
+                    nameof(PageLinkTagHelper),
+                    "MISSING_LINKABLE_PAGE",
+                    "No Linkable Page has been assigned.",
+                    loggingPolicy: LoggingPolicy.ONLY_ONCE);
 
-            return;
-        }
+                return;
+            }
 
-        var pageUrl = urlRetriever.Retrieve(linkedPage);
+            var pages = await pageRetriever
+                .RetrieveAsync<TreeNode>(
+                    query => query
+                        .WhereEquals(nameof(TreeNode), Page.NodeGUID)
+                        // Optimize returned columns, .WithPageUrlPaths() will add back the ones it needs
+                        .Columns(nameof(TreeNode.NodeID))
+                        .WithPageUrlPaths(),
+                    cache => cache.Key($"page-link|{Page.NodeGUID}"));
 
-        string querystring = QueryParams is not null
-            ? QueryParams.ToQueryString()
-            : "";
+            var linkedPage = pages.FirstOrDefault();
 
-        output.TagName = "a";
-        output.TagMode = TagMode.StartTagAndEndTag;
+            if (linkedPage is null)
+            {
+                log.LogWarning(
+                    nameof(PageLinkTagHelper),
+                    $"MISSING_PAGE_{Page.NodeGUID}", // Include the NodeGUID in the EventCode because it is part of the cache key for "ONLY_ONCE" events
+                    $"Could not find Page [{Page.NodeGUID}]", loggingPolicy: LoggingPolicy.ONLY_ONCE);
 
-        output.Attributes.SetAttribute("href", pageUrl.RelativePath + querystring);
+                return;
+            }
 
-        var childContent = await output.GetChildContentAsync();
+            PageUrl? pageUrl = null;
 
-        if (string.IsNullOrWhiteSpace(childContent.GetContent()))
-        {
-            string linkText = string.IsNullOrWhiteSpace(LinkText)
-                ? linkedPage.DocumentName
-                : LinkText;
+            try
+            {
+                pageUrl = urlRetriever.Retrieve(linkedPage);
+            }
+            catch (Exception ex)
+            {
+                log.LogException(
+                    nameof(PageLinkTagHelper),
+                    $"PAGE_URL_RETRIEVAL_FAILED_{Page.NodeGUID}",
+                    ex,
+                    loggingPolicy: LoggingPolicy.ONLY_ONCE);
 
-            _ = output.PreContent.SetContent(linkText);
+                return;
+            }
+
+            string querystring = !(QueryParams is null)
+                ? QueryParams.ToQueryString()
+                : "";
+
+            output.Attributes.SetAttribute("href", pageUrl.RelativePath + querystring);
+
+            var childContent = await output.GetChildContentAsync();
+
+            if (string.IsNullOrWhiteSpace(childContent.GetContent()))
+            {
+                string linkText = string.IsNullOrWhiteSpace(LinkText)
+                    ? linkedPage.DocumentName
+                    : LinkText;
+
+                _ = output.PreContent.SetContent(linkText);
+            }
         }
     }
 }
-

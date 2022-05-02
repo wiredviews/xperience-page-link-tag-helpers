@@ -1,6 +1,9 @@
-﻿namespace XperienceCommunity.PageLinkTagHelpers;
+﻿using System;
 
-public interface ILinkablePage
+namespace XperienceCommunity.PageLinkTagHelpers
 {
-    Guid NodeGUID { get; }
+    public interface ILinkablePage
+    {
+        Guid NodeGUID { get; }
+    }
 }
