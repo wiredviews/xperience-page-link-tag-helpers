@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Description>
-
+      Provides ASP.NET Core Tag Helpers for Kentico Xperience 13.0 applications to help developers easily generate links to pages in the content tree.
     </Description>
 
     <Product>XperienceCommunity.PageLinkTagHelpers</Product>

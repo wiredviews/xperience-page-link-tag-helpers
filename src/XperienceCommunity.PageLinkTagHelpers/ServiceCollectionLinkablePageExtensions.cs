@@ -1,0 +1,36 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
+
+namespace XperienceCommunity.PageLinkTagHelpers
+{
+    public static class ServiceCollectionLinkablePageExtensions
+    {
+        /// <summary>
+        /// Adds the default link generation types to DI.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddXperienceCommunityPageLinks(this IServiceCollection services)
+        {
+            services.TryAddSingleton<ILinkablePageLinkRetriever, DefaultLinkablePageLinkRetriever>();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the custom <typeparamref name="TCustomLinkablePageLinkRetriever" /> type as the implementation
+        /// for <see cref="ILinkablePageLinkRetriever" /> for link generation to DI.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <typeparam name="TCustomLinkablePageLinkRetriever"></typeparam>
+        /// <returns></returns>
+        public static IServiceCollection AddXperienceCommunityPageLinks<TCustomLinkablePageLinkRetriever>(this IServiceCollection services)
+            where TCustomLinkablePageLinkRetriever : class, ILinkablePageLinkRetriever
+        {
+            services.TryAddSingleton<ILinkablePageLinkRetriever, TCustomLinkablePageLinkRetriever>();
+
+            return services;
+        }
+    }
+}
