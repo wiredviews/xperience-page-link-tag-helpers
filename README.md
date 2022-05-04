@@ -10,7 +10,7 @@ Kentico Xperience 13.0 ASP.NET Core Tag Helpers that generates links to pages fr
 
 ## Dependencies
 
-This package is compatible with ASP.NET Core 6 applications or libraries integrated with Kentico Xperience 13.0.
+This package is compatible with ASP.NET Core 3.1+ applications or libraries integrated with Kentico Xperience 13.0.
 
 ## How to Use?
 
@@ -145,4 +145,6 @@ This will generate the following HTML:
 
 ### Kentico Xperience
 
+- [Retrieving Pages](https://docs.xperience.io/custom-development/working-with-pages-in-the-api#WorkingwithpagesintheAPI-Retrievingpagesonthelivesite)
+- [Displaying Page URLs](https://docs.xperience.io/developing-websites/retrieving-content/displaying-page-content#Displayingpagecontent-GettingpageURLs)
 - [Document Events](https://docs.xperience.io/custom-development/handling-global-events/reference-global-system-events#ReferenceGlobalsystemevents-DocumentEvents)
