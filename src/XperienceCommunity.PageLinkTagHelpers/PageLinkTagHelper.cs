@@ -22,9 +22,6 @@ namespace XperienceCommunity.PageLinkTagHelpers
         [HtmlAttributeName("xp-page-link")]
         public ILinkablePage? Page { get; set; }
 
-        [HtmlAttributeName("xp-page-link-text")]
-        public string? LinkText { get; set; } = "";
-
         [HtmlAttributeName("xp-page-link-query-params")]
         public NameValueCollection? QueryParams { get; set; }
 
@@ -79,13 +76,18 @@ namespace XperienceCommunity.PageLinkTagHelpers
 
             var childContent = await output.GetChildContentAsync();
 
-            if (string.IsNullOrWhiteSpace(childContent.GetContent()))
+            if (!output.Attributes.TryGetAttribute("title", out var titleAttribute))
             {
-                string linkText = string.IsNullOrWhiteSpace(LinkText)
-                    ? result.LinkText
-                    : LinkText;
+                output.Attributes.SetAttribute("title", result.LinkText);
+            }
+            else if (string.IsNullOrWhiteSpace(titleAttribute.Value.ToString()) && childContent.IsEmptyOrWhiteSpace)
+            {
+                output.Attributes.SetAttribute("title", result.LinkText);
+            }
 
-                _ = output.PreContent.SetContent(linkText);
+            if (childContent.IsEmptyOrWhiteSpace)
+            {
+                _ = output.Content.SetContent(result.LinkText);
             }
         }
     }

@@ -22,7 +22,14 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
 
 1. Add the correct `@addTagHelper` directive to your `_ViewImports.cshtml` file:
 
-   `@addTagHelper *, XperienceCommunity.PageLinkTagHelpers`
+   ```csharp
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+    @addTagHelper *, Kentico.Content.Web.Mvc
+    @addTagHelper *, Kentico.Web.Mvc
+    @addTagHelper *, DancingGoatCore
+
+    @addTagHelper *, XperienceCommunity.PageLinkTagHelpers
+   ```
 
 1. Create an implementation of `ILinkablePage`:
 
@@ -122,19 +129,102 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
 
 ## Usage
 
+### Simple
+
+Razor (assuming the ContactUs Page has a `DocumentName` of "Contact Us"):
+
+```html
+<a
+  href=""
+  xp-page-link="LinkablePage.ContactUs"></a>
+```
+
+Generated HTML will set the child content, `href` and `title` attributes:
+
+```html
+<a href="/contact-us" title="Contact Us">Contact Us</a>
+```
+
+### Custom Content
+
+Razor (assuming the ContactUs Page has a `DocumentName` of "Contact Us"):
+
+```html
+<a
+  href=""
+  title="Please contact us"
+  xp-page-link="LinkablePage.ContactUs">
+    <img src="...">
+</a>
+```
+
+Generated HTML will keep the child content and only set the `href` and `title` attributes:
+
+```html
+<a href="/contact-us" title="Please contact us">
+    <img src="...">
+</a>
+```
+
+### Empty Title Attribute with Child Content
+
+Razor (assuming the ContactUs Page has a `DocumentName` of "Contact Us"):
+
+```html
+<a
+  href=""
+  title=""
+  xp-page-link="LinkablePage.ContactUs">
+    No title necessary!
+</a>
+```
+
+Generated HTML will not populate the `title` attribute, assuming the child content provides some text:
+
+```html
+<a href="/contact-us" title="">
+    No title necessary!
+</a>
+```
+
+### Empty Title Attribute with No Child Content
+
+Razor (assuming the ContactUs Page has a `DocumentName` of "Contact Us"):
+
+```html
+<a
+  href=""
+  title=""
+  xp-page-link="LinkablePage.ContactUs">
+</a>
+```
+
+Generated HTML will populate the `title` for accessibility:
+
+```html
+<a href="/contact-us" title="Contact Us">
+    Contact Us
+</a>
+```
+
+### Query String Parameters
+
+Razor:
+
 ```html
 <a
   href=""
   xp-page-link="LinkablePage.ContactUs"
-  xp-page-link-text="Contact us for help!"
-  xp-page-link-query-params='new NameValueCollection { { "a": "b" } }'
-></a>
+  title="Please contact us"
+  xp-page-link-query-params="@(new NameValueCollection { { "a": "b" } })">
+    Contact us for help!
+  </a>
 ```
 
-This will generate the following HTML:
+Generated HTML will include query string parameters in the `href`, and set the `title` attribute/child content as appropriate:
 
 ```html
-<a href="/contact-us?a=b">Contact us for help!</a>
+<a href="/contact-us?a=b" title="Please contact us">Contact us for help!</a>
 ```
 
 ## References
