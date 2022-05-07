@@ -35,7 +35,7 @@ namespace XperienceCommunity.PageLinkTagHelpers
             var pages = await pageRetriever
                 .RetrieveAsync<TreeNode>(
                     query => query
-                        .WhereEquals(nameof(TreeNode), nodeGUID)
+                        .WhereEquals(nameof(TreeNode.NodeGUID), nodeGUID)
                         // Optimize returned columns, .WithPageUrlPaths() will add back the ones it needs
                         .Columns(nameof(TreeNode.DocumentName))
                         .WithPageUrlPaths(),
