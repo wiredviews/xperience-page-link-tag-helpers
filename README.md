@@ -215,6 +215,12 @@ Generated HTML will include query string parameters in the `href`, and set the `
 <a href="/contact-us?a=b" title="Please contact us">Contact us for help!</a>
 ```
 
+## Contributions
+
+If you discover a problem, please [open an issue](https://github.com/wiredviews/xperience-page-link-tag-helpers/issues/new).
+
+If you would like contribute to the code or documentation, please [open a pull request](https://github.com/wiredviews/xperience-page-link-tag-helpers/compare).
+
 ## References
 
 ### .NET
