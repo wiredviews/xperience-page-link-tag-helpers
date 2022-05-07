@@ -75,11 +75,7 @@ namespace XperienceCommunity.PageLinkTagHelpers
                 return;
             }
 
-            string querystring = !(QueryParams is null)
-                ? QueryParams.ToQueryString()
-                : "";
-
-            output.Attributes.SetAttribute("href", result.LinkURL + querystring);
+            output.Attributes.SetAttribute("href", result.LinkURL + QueryParams?.ToQueryString() ?? "");
 
             var childContent = await output.GetChildContentAsync();
 
