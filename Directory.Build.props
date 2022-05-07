@@ -13,7 +13,7 @@
 		<PackageProjectUrl>https://github.com/wiredviews/xperience-page-link-tag-helpers</PackageProjectUrl>
 		<PackageIcon>wv-logo.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageTags>xperience;kentico</PackageTags>
+		<PackageTags>xperience;kentico;aspnetcore</PackageTags>
 		<PackageReleaseNotes>https://github.com/wiredviews/xperience-page-link-tag-helpers/releases</PackageReleaseNotes>
 	</PropertyGroup>
 

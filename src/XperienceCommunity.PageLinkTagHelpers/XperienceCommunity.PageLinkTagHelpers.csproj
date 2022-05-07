@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Description>
-
+      This package provides a Tag Helper which allows developers to easily generate links to pages in the Content Tree.
     </Description>
 
     <Product>XperienceCommunity.PageLinkTagHelpers</Product>
@@ -13,6 +13,10 @@
 
   <ItemGroup>
     <PackageReference Include="Kentico.Xperience.AspNetCore.WebApp" Version="[13.0.0, 13.1.0)" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
   </ItemGroup>
 
   <ItemGroup>
