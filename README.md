@@ -20,17 +20,6 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    dotnet add package XperienceCommunity.PageLinkTagHelpers
    ```
 
-1. Add the correct `@addTagHelper` directive to your `_ViewImports.cshtml` file:
-
-   ```csharp
-    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-    @addTagHelper *, Kentico.Content.Web.Mvc
-    @addTagHelper *, Kentico.Web.Mvc
-    @addTagHelper *, DancingGoatCore
-
-    @addTagHelper *, XperienceCommunity.PageLinkTagHelpers
-   ```
-
 1. Create an implementation of `ILinkablePage`:
 
    ```csharp
@@ -55,6 +44,21 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    }
    ```
 
+1. Add the correct `@addTagHelper` directive to your `_ViewImports.cshtml` file:
+
+   > (optional) Add your `LinkablePage` class's namespace to your `_ViewImports.cshtml` file (ex: Sandbox.Pages).
+
+   ```csharp
+    @using Sandbox.Pages
+
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+    @addTagHelper *, Kentico.Content.Web.Mvc
+    @addTagHelper *, Kentico.Web.Mvc
+    @addTagHelper *, DancingGoatCore
+
+    @addTagHelper *, XperienceCommunity.PageLinkTagHelpers
+   ```
+
 1. Register the library with ASP.NET Core DI:
 
    ```csharp
@@ -63,12 +67,10 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
        // Use default implementations
        services.AddXperienceCommunityPageLinks();
 
-       // or use a custom implementation
+       // or use a custom implementation of ILinkablePageLinkRetriever
        services.AddXperienceCommunityPageLinks<MyCustomLinkablePageLinkRetriever>();
    }
    ```
-
-1. (optional) Add your `LinkablePage` class's namespace to your `_ViewImports.cshtml` file.
 
 1. Use the `xp-page-link` tag helper on an `<a>` element in a Razor View:
 
@@ -127,6 +129,8 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    }
    ```
 
+1. Use Kentico Xperience's [Content Staging](https://docs.xperience.io/deploying-websites/content-staging) to keep your `LinkablePage`s valid between different environments.
+
 ## Usage
 
 ### Simple
@@ -134,9 +138,7 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
 Razor (assuming the ContactUs Page has a `DocumentName` of "Contact Us"):
 
 ```html
-<a
-  href=""
-  xp-page-link="LinkablePage.ContactUs"></a>
+<a href="" xp-page-link="LinkablePage.ContactUs"></a>
 ```
 
 Generated HTML will set the child content, `href` and `title` attributes:
@@ -150,11 +152,8 @@ Generated HTML will set the child content, `href` and `title` attributes:
 Razor (assuming the ContactUs Page has a `DocumentName` of "Contact Us"):
 
 ```html
-<a
-  href=""
-  title="Please contact us"
-  xp-page-link="LinkablePage.ContactUs">
-    <img src="...">
+<a href="" title="Please contact us" xp-page-link="LinkablePage.ContactUs">
+  <img src="..." />
 </a>
 ```
 
@@ -162,29 +161,24 @@ Generated HTML will keep the child content and only set the `href` and `title` a
 
 ```html
 <a href="/contact-us" title="Please contact us">
-    <img src="...">
+  <img src="..." />
 </a>
 ```
 
 ### Empty Title Attribute with Child Content
 
-Razor (assuming the ContactUs Page has a `DocumentName` of "Contact Us"):
+Razor:
 
 ```html
-<a
-  href=""
-  title=""
-  xp-page-link="LinkablePage.ContactUs">
-    No title necessary!
+<a href="" title="" xp-page-link="LinkablePage.ContactUs">
+  No title necessary!
 </a>
 ```
 
 Generated HTML will not populate the `title` attribute, assuming the child content provides some text:
 
 ```html
-<a href="/contact-us" title="">
-    No title necessary!
-</a>
+<a href="/contact-us" title=""> No title necessary! </a>
 ```
 
 ### Empty Title Attribute with No Child Content
@@ -192,19 +186,13 @@ Generated HTML will not populate the `title` attribute, assuming the child conte
 Razor (assuming the ContactUs Page has a `DocumentName` of "Contact Us"):
 
 ```html
-<a
-  href=""
-  title=""
-  xp-page-link="LinkablePage.ContactUs">
-</a>
+<a href="" title="" xp-page-link="LinkablePage.ContactUs"> </a>
 ```
 
 Generated HTML will populate the `title` for accessibility:
 
 ```html
-<a href="/contact-us" title="Contact Us">
-    Contact Us
-</a>
+<a href="/contact-us" title="Contact Us"> Contact Us </a>
 ```
 
 ### Query String Parameters
