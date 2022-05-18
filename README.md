@@ -6,7 +6,7 @@
 
 [![NuGet Package](https://img.shields.io/nuget/v/XperienceCommunity.PageLinkTagHelpers.svg)](https://www.nuget.org/packages/XperienceCommunity.PageLinkTagHelpers)
 
-Kentico Xperience 13.0 ASP.NET Core Tag Helpers that generates links to pages from NodeGUID values
+Kentico Xperience 13.0 ASP.NET Core Tag Helpers that generate links to predefined pages using their NodeGUID values.
 
 ## Dependencies
 
@@ -14,13 +14,13 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
 
 ## How to Use?
 
-1. Install the NuGet package in your ASP.NET Core project (or class library)
+1. Install the NuGet package in your ASP.NET Core project (or class library):
 
    ```bash
    dotnet add package XperienceCommunity.PageLinkTagHelpers
    ```
 
-1. Create an implementation of `ILinkablePage`:
+1. Create a class implementing the `ILinkablePage` where you define pages that are available to the tag helper:
 
    ```csharp
    public class LinkablePage : ILinkablePage
@@ -46,7 +46,7 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
 
 1. Add the correct `@addTagHelper` directive to your `_ViewImports.cshtml` file:
 
-   > (optional) Add your `LinkablePage` class's namespace to your `_ViewImports.cshtml` file (ex: Sandbox.Pages).
+   > (optional) Add your `LinkablePage` class's namespace to your `_ViewImports.cshtml` file (e.g., `Sandbox.Pages`).
 
    ```csharp
     @using Sandbox.Pages
@@ -72,7 +72,7 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    }
    ```
 
-1. Use the `xp-page-link` tag helper on an `<a>` element in a Razor View:
+1. Use the `xp-page-link` tag helper in an `<a>` element in a Razor View:
 
    ```html
    <a href="" xp-page-link="LinkablePage.Home">
@@ -129,7 +129,7 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    }
    ```
 
-1. Use Kentico Xperience's [Content Staging](https://docs.xperience.io/deploying-websites/content-staging) to keep your `LinkablePage`s valid between different environments.
+1. Use Kentico Xperience's [Content Staging](https://docs.xperience.io/x/cgeRBg) to keep your `LinkablePage` bindings valid between different environments.
 
 ## Usage
 
@@ -204,7 +204,7 @@ Razor:
   href=""
   xp-page-link="LinkablePage.ContactUs"
   title="Please contact us"
-  xp-page-link-query-params="@(new NameValueCollection { { "a": "b" } })">
+  xp-page-link-query-params="@(new NameValueCollection { { "parameter": "value" } })">
     Contact us for help!
   </a>
 ```
@@ -212,7 +212,7 @@ Razor:
 Generated HTML will include query string parameters in the `href`, and set the `title` attribute/child content as appropriate:
 
 ```html
-<a href="/contact-us?a=b" title="Please contact us">Contact us for help!</a>
+<a href="/contact-us?parameter=value" title="Please contact us">Contact us for help!</a>
 ```
 
 ## Contributions
@@ -229,6 +229,6 @@ If you would like contribute to the code or documentation, please [open a pull r
 
 ### Kentico Xperience
 
-- [Retrieving Pages](https://docs.xperience.io/custom-development/working-with-pages-in-the-api#WorkingwithpagesintheAPI-Retrievingpagesonthelivesite)
-- [Displaying Page URLs](https://docs.xperience.io/developing-websites/retrieving-content/displaying-page-content#Displayingpagecontent-GettingpageURLs)
-- [Document Events](https://docs.xperience.io/custom-development/handling-global-events/reference-global-system-events#ReferenceGlobalsystemevents-DocumentEvents)
+- [Retrieving Pages](https://docs.xperience.io/x/vwyRBg#WorkingwithpagesintheAPI-Retrievingpagesonthelivesite)
+- [Displaying Page URLs](https://docs.xperience.io/x/Kw2RBg#Displayingpagecontent-GettingpageURLs)
+- [Document Events](https://docs.xperience.io/x/2AyRBg#ReferenceGlobalsystemevents-DocumentEvents)
