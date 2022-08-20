@@ -26,6 +26,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>1591</NoWarn>
 		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 		<DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
 	</PropertyGroup>
