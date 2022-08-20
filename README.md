@@ -4,59 +4,94 @@
 
 [![Publish Packages to NuGet](https://github.com/wiredviews/xperience-page-link-tag-helpers/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/wiredviews/xperience-page-link-tag-helpers/actions/workflows/publish.yml)
 
-[![NuGet Package](https://img.shields.io/nuget/v/XperienceCommunity.PageLinkTagHelpers.svg)](https://www.nuget.org/packages/XperienceCommunity.PageLinkTagHelpers)
-
-Kentico Xperience 13.0 ASP.NET Core Tag Helpers that generate links to predefined pages using their NodeGUID values.
-
 ## Dependencies
 
 This package is compatible with ASP.NET Core 3.1+ applications or libraries integrated with Kentico Xperience 13.0.
 
+## Packages
+
+### LinkablePages
+
+[![NuGet Package](https://img.shields.io/nuget/v/XperienceCommunity.LinkablePages.svg)](https://www.nuget.org/packages/XperienceCommunity.LinkablePages)
+
+Kentico Xperience 13.0 custom module to protect pages referenced in code from deletion and shared abstractions for linkable pages.
+
+### PageLinkTagHelpers
+
+[![NuGet Package](https://img.shields.io/nuget/v/XperienceCommunity.PageLinkTagHelpers.svg)](https://www.nuget.org/packages/XperienceCommunity.PageLinkTagHelpers)
+
+Kentico Xperience 13.0 ASP.NET Core Tag Helper that generates links to predefined pages using their NodeGUID values, and extension methods for registering dependencies in ASP.NET Core.
+
 ## How to Use?
 
-1. Install the NuGet package in your ASP.NET Core project (or class library):
+1. Install the `XperienceCommunity.LinkablePages` NuGet package in a class library shared by your ASP.NET Core and CMS applications:
+
+   ```bash
+   dotnet add package XperienceCommunity.LinkablePages
+   ```
+
+1. In the shared class library, create a class implementing the `ILinkablePage` where you define pages that are available to the tag helper:
+
+   > Populate the `Guid` values with the `NodeGUID` of each page in the content tree that you need to link to in your application.
+
+   ```csharp
+   public namespace Sandbox.Shared
+   {
+      public class LinkablePage : ILinkablePage
+      {
+          public static LinkablePage Home { get; } = new LinkablePage(new Guid("..."));
+          public static LinkablePage Store { get; } = new LinkablePage(new Guid("..."));
+          public static LinkablePage ContactUs { get; } = new LinkablePage(new Guid("..."));
+          public static LinkablePage TermsOfUse { get; } = new LinkablePage(new Guid("..."));
+
+          public Guid NodeGUID { get; }
+
+          protected LinkablePage(Guid nodeGUID) => NodeGUID = nodeGUID;
+
+          public static IReadOnlyList<LinkablePage> All { get; } = new List<LinkablePage>
+          {
+              Home,
+              Store,
+              ContactUs,
+              TermsOfUse
+          };
+      }
+   }
+   ```
+
+1. In the shared class library, create an implementation of the `ILinkablePageInventory` interface, which will be used to determine which Pages in the application should be protected:
+
+   ```csharp
+   public class LinkablePageInventory : ILinkablePageInventory
+   {
+       public bool IsLinkablePage(TreeNode page)
+       {
+           return LinkablePage.All.Any(p => p.NodeGUID == page.NodeGUID);
+       }
+   }
+   ```
+
+1. Install the `XperienceCommunity.PageLinkTagHelpers` NuGet package in your ASP.NET Core project:
 
    ```bash
    dotnet add package XperienceCommunity.PageLinkTagHelpers
    ```
 
-1. Create a class implementing the `ILinkablePage` where you define pages that are available to the tag helper:
+1. Add the `@addTagHelper` directive to your `_ViewImports.cshtml` file:
 
-   ```csharp
-   public class LinkablePage : ILinkablePage
-   {
-       public static LinkablePage Home { get; } = new LinkablePage(new Guid("..."));
-       public static LinkablePage Store { get; } = new LinkablePage(new Guid("..."));
-       public static LinkablePage ContactUs { get; } = new LinkablePage(new Guid("..."));
-       public static LinkablePage TermsOfUse { get; } = new LinkablePage(new Guid("..."));
+   > (optional) Add your `LinkablePage` class's namespace to your `_ViewImports.cshtml` file (e.g., `Sandbox.Shared`).
 
-       public Guid NodeGUID { get; }
+   ```razor
+   // Add this using to make LinkablePages easy to access in Views
+   @using Sandbox.Shared
 
-       protected LinkablePage(Guid nodeGUID) => NodeGUID = nodeGUID;
+   @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+   @addTagHelper *, Kentico.Content.Web.Mvc
+   @addTagHelper *, Kentico.Web.Mvc
+   @addTagHelper *, DancingGoatCore
 
-       public static IReadOnlyList<LinkablePage> All { get; } = new List<LinkablePage>
-       {
-           Home,
-           Store,
-           ContactUs,
-           TermsOfUse
-       };
-   }
-   ```
-
-1. Add the correct `@addTagHelper` directive to your `_ViewImports.cshtml` file:
-
-   > (optional) Add your `LinkablePage` class's namespace to your `_ViewImports.cshtml` file (e.g., `Sandbox.Pages`).
-
-   ```csharp
-    @using Sandbox.Pages
-
-    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-    @addTagHelper *, Kentico.Content.Web.Mvc
-    @addTagHelper *, Kentico.Web.Mvc
-    @addTagHelper *, DancingGoatCore
-
-    @addTagHelper *, XperienceCommunity.PageLinkTagHelpers
+   // Add this directive to use the Tag Helper
+   @addTagHelper *, XperienceCommunity.PageLinkTagHelpers
    ```
 
 1. Register the library with ASP.NET Core DI:
@@ -64,12 +99,22 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    ```csharp
    public void ConfigureServices(IServiceCollection services)
    {
-       // Use default implementations
-       services.AddXperienceCommunityPageLinks();
+       // Use standard registration
+       services
+         .AddXperienceCommunityPageLinks()
+         .AddXperienceCommunityPageLinksProtection<LinkablePageInventory>();
 
        // or use a custom implementation of ILinkablePageLinkRetriever
-       services.AddXperienceCommunityPageLinks<MyCustomLinkablePageLinkRetriever>();
+       services
+         .AddXperienceCommunityPageLinks<MyCustomLinkablePageLinkRetriever>()
+         .AddXperienceCommunityPageLinksProtection<LinkablePageInventory>();
    }
+   ```
+
+1. Add the data protection custom module registration to your ASP.NET Core application (in `Startup.cs` or wherever you register your dependencies):
+
+   ```csharp
+   [assembly: RegisterModule(typeof(LinkablePageProtectionModule))]
    ```
 
 1. Use the `xp-page-link` tag helper in an `<a>` element in a Razor View:
@@ -83,53 +128,36 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    </a>
    ```
 
-1. (recommended) Create a global event handler to protect the Pages referenced by your `ILinkablePage` implementation:
+1. Create a custom module class in your CMS application to register the `LinkablePageProtectionModule` and the `ILinkablePageInventory` implementation:
 
    ```csharp
-   using System;
-   using System.Linq;
-   using CMS;
-   using CMS.Core;
-   using CMS.DataEngine;
-   using CMS.DocumentEngine;
+   // Registers this custom module class
+   [assembly: RegisterModule(typeof(DependencyRegistrationModule))]
 
+   // Registers the library's custom module class
    [assembly: RegisterModule(typeof(LinkablePageProtectionModule))]
 
-   namespace Sandbox
+   namespace CMSApp
    {
-       /// <summary>
-       /// Protects <see cref="LinkablePage"/> instances that represent Pages in the content tree with hard coded <see cref="TreeNode.NodeGUID"/> values.
-       /// </summary>
-       public class LinkablePageProtectionModule : Module
+       public class DependencyRegistrationModule : Module
        {
-           public LinkablePageProtectionModule() : base(nameof(LinkablePageProtectionModule)) { }
-
-           protected override void OnInit()
+           public DependencyRegistrationModule() : base(nameof(DependencyRegistrationModule))
            {
-               base.OnInit();
 
-               DocumentEvents.Delete.Before += Delete_Before;
            }
 
-           private void Delete_Before(object sender, DocumentEventArgs e)
+           protected override void OnPreInit()
            {
-               if (LinkablePage.All.Any(p => p.NodeGuid == e.Node.NodeGUID))
-               {
-                   e.Cancel();
+               base.OnPreInit();
 
-                   var log = Service.Resolve<IEventLogService>();
-
-                   log.LogError(
-                       nameof(LinkablePageProtectionModule),
-                       "DELETE_PAGE",
-                       $"Cannot delete Linkable Page [{e.Node.NodeAliasPath}], as it might be in use. Please first remove the Linkable Page in the application code and re-deploy the application.");
-               }
+               // Registers the ILinkablePageInventory implementation used by the LinkablePageProtectionModule
+               Service.Use<ILinkablePageInventory, LinkablePageInventory>();
            }
        }
    }
    ```
 
-1. Use Kentico Xperience's [Content Staging](https://docs.xperience.io/x/cgeRBg) to keep your `LinkablePage` bindings valid between different environments.
+1. Use Kentico Xperience's [Content Staging](https://docs.xperience.io/x/cgeRBg) to keep your `LinkablePage` `NodeGUID` values valid between different environments.
 
 ## Usage
 
@@ -204,15 +232,17 @@ Razor:
   href=""
   xp-page-link="LinkablePage.ContactUs"
   title="Please contact us"
-  xp-page-link-query-params="@(new NameValueCollection { { "parameter": "value" } })">
+  xp-page-link-query-params="@(new() { { "parameter": "value" } })">
     Contact us for help!
-  </a>
+</a>
 ```
 
 Generated HTML will include query string parameters in the `href`, and set the `title` attribute/child content as appropriate:
 
 ```html
-<a href="/contact-us?parameter=value" title="Please contact us">Contact us for help!</a>
+<a href="/contact-us?parameter=value" title="Please contact us">
+   Contact us for help!
+</a>
 ```
 
 ## Contributions

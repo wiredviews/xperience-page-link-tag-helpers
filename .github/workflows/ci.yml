@@ -37,7 +37,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
 
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore --locked-mode
       
     - name: Build Solution
       run: dotnet build --configuration Release --no-restore

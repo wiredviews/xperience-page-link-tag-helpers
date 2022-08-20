@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-
+using XperienceCommunity.LinkablePages;
 
 namespace XperienceCommunity.PageLinkTagHelpers
 {
@@ -29,6 +29,21 @@ namespace XperienceCommunity.PageLinkTagHelpers
             where TCustomLinkablePageLinkRetriever : class, ILinkablePageLinkRetriever
         {
             services.TryAddSingleton<ILinkablePageLinkRetriever, TCustomLinkablePageLinkRetriever>();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the custom <typeparamref name="TCustomLinkablePageInventory" /> type as the implementation
+        /// for <see cref="ILinkablePageInventory" /> for link protection to DI.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <typeparam name="TCustomLinkablePageInventory"></typeparam>
+        /// <returns></returns>
+        public static IServiceCollection AddXperienceCommunityPageLinksProtection<TCustomLinkablePageInventory>(this IServiceCollection services)
+            where TCustomLinkablePageInventory : class, ILinkablePageInventory
+        {
+            services.TryAddSingleton<ILinkablePageInventory, TCustomLinkablePageInventory>();
 
             return services;
         }
