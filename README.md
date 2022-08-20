@@ -4,21 +4,23 @@
 
 [![Publish Packages to NuGet](https://github.com/wiredviews/xperience-page-link-tag-helpers/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/wiredviews/xperience-page-link-tag-helpers/actions/workflows/publish.yml)
 
-## PageLinkTagHelpers
+## Dependencies
 
-[![NuGet Package](https://img.shields.io/nuget/v/XperienceCommunity.PageLinkTagHelpers.svg)](https://www.nuget.org/packages/XperienceCommunity.PageLinkTagHelpers)
+This package is compatible with ASP.NET Core 3.1+ applications or libraries integrated with Kentico Xperience 13.0.
 
-Kentico Xperience 13.0 ASP.NET Core Tag Helper that generates links to predefined pages using their NodeGUID values.
+## Packages
 
-## LinkablePages
+### LinkablePages
 
 [![NuGet Package](https://img.shields.io/nuget/v/XperienceCommunity.LinkablePages.svg)](https://www.nuget.org/packages/XperienceCommunity.LinkablePages)
 
 Kentico Xperience 13.0 custom module to protect pages referenced in code from deletion and shared abstractions for linkable pages.
 
-## Dependencies
+### PageLinkTagHelpers
 
-This package is compatible with ASP.NET Core 3.1+ applications or libraries integrated with Kentico Xperience 13.0.
+[![NuGet Package](https://img.shields.io/nuget/v/XperienceCommunity.PageLinkTagHelpers.svg)](https://www.nuget.org/packages/XperienceCommunity.PageLinkTagHelpers)
+
+Kentico Xperience 13.0 ASP.NET Core Tag Helper that generates links to predefined pages using their NodeGUID values, and extension methods for registering dependencies in ASP.NET Core.
 
 ## How to Use?
 
@@ -75,7 +77,7 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    dotnet add package XperienceCommunity.PageLinkTagHelpers
    ```
 
-1. Add the correct `@addTagHelper` directive to your `_ViewImports.cshtml` file:
+1. Add the `@addTagHelper` directive to your `_ViewImports.cshtml` file:
 
    > (optional) Add your `LinkablePage` class's namespace to your `_ViewImports.cshtml` file (e.g., `Sandbox.Shared`).
 
@@ -97,7 +99,7 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    ```csharp
    public void ConfigureServices(IServiceCollection services)
    {
-       // Use default implementations
+       // Use standard registration
        services
          .AddXperienceCommunityPageLinks()
          .AddXperienceCommunityPageLinksProtection<LinkablePageInventory>();
@@ -129,7 +131,10 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
 1. Create a custom module class in your CMS application to register the `LinkablePageProtectionModule` and the `ILinkablePageInventory` implementation:
 
    ```csharp
+   // Registers this custom module class
    [assembly: RegisterModule(typeof(DependencyRegistrationModule))]
+
+   // Registers the library's custom module class
    [assembly: RegisterModule(typeof(LinkablePageProtectionModule))]
 
    namespace CMSApp
@@ -145,6 +150,7 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
            {
                base.OnPreInit();
 
+               // Registers the ILinkablePageInventory implementation used by the LinkablePageProtectionModule
                Service.Use<ILinkablePageInventory, LinkablePageInventory>();
            }
        }
@@ -226,17 +232,17 @@ Razor:
   href=""
   xp-page-link="LinkablePage.ContactUs"
   title="Please contact us"
-  xp-page-link-query-params="@(new NameValueCollection { { "parameter": "value" } })">
+  xp-page-link-query-params="@(new() { { "parameter": "value" } })">
     Contact us for help!
-  </a>
+</a>
 ```
 
 Generated HTML will include query string parameters in the `href`, and set the `title` attribute/child content as appropriate:
 
 ```html
-<a href="/contact-us?parameter=value" title="Please contact us"
-  >Contact us for help!</a
->
+<a href="/contact-us?parameter=value" title="Please contact us">
+   Contact us for help!
+</a>
 ```
 
 ## Contributions
