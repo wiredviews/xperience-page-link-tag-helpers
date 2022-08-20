@@ -23,4 +23,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\XperienceCommunity.LinkablePages\XperienceCommunity.LinkablePages.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -5,6 +5,7 @@ using CMS.Core;
 using CMS.DocumentEngine;
 using Kentico.Content.Web.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using XperienceCommunity.LinkablePages;
 
 namespace XperienceCommunity.PageLinkTagHelpers
 {

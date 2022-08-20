@@ -10,4 +10,11 @@
         Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != '' and Exists('%(RootDir)%(Directory)%(Filename).xml')" />
     </ItemGroup>
   </Target>
+
+  <ItemGroup>
+    <Content Remove="*lock.json" />
+    <Content Remove="package.json" />
+    <None Remove="package.json" />
+    <None Remove="*lock.json" />
+  </ItemGroup>
 </Project>

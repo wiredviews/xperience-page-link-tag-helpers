@@ -11,6 +11,7 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 using Tests.DocumentEngine;
+using XperienceCommunity.LinkablePages;
 
 namespace XperienceCommunity.PageLinkTagHelpers.Tests;
 

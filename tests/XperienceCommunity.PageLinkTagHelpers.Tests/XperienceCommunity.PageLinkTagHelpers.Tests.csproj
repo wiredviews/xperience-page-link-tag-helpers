@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\XperienceCommunity.PageLinkTagHelpers\XperienceCommunity.PageLinkTagHelpers.csproj" />
+    <ProjectReference Include="..\..\src\XperienceCommunity.LinkablePages\XperienceCommunity.LinkablePages.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XperienceCommunity.PageLinkTagHelpers
+namespace XperienceCommunity.LinkablePages
 {
     public interface ILinkablePage
     {
