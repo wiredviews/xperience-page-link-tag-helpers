@@ -4,10 +4,6 @@
 
 [![Publish Packages to NuGet](https://github.com/wiredviews/xperience-page-link-tag-helpers/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/wiredviews/xperience-page-link-tag-helpers/actions/workflows/publish.yml)
 
-## Dependencies
-
-This package is compatible with ASP.NET Core 3.1+ applications or libraries integrated with Kentico Xperience 13.0.
-
 ## Packages
 
 ### LinkablePages
@@ -16,11 +12,15 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
 
 Kentico Xperience 13.0 custom module to protect pages referenced in code from deletion and shared abstractions for linkable pages.
 
+This package is compatible with .NET Standard 2.0 libraries integrated with Kentico Xperience 13.0.
+
 ### PageLinkTagHelpers
 
 [![NuGet Package](https://img.shields.io/nuget/v/XperienceCommunity.PageLinkTagHelpers.svg)](https://www.nuget.org/packages/XperienceCommunity.PageLinkTagHelpers)
 
 Kentico Xperience 13.0 ASP.NET Core Tag Helper that generates links to predefined pages using their NodeGUID values, and extension methods for registering dependencies in ASP.NET Core.
+
+This package is compatible with ASP.NET Core 3.1+ applications or libraries integrated with Kentico Xperience 13.0.
 
 ## How to Use?
 
