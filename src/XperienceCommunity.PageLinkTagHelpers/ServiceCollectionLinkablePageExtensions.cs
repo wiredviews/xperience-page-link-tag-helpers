@@ -13,7 +13,7 @@ namespace XperienceCommunity.PageLinkTagHelpers
         /// <returns></returns>
         public static IServiceCollection AddXperienceCommunityPageLinks(this IServiceCollection services)
         {
-            services.TryAddSingleton<ILinkablePageLinkRetriever, DefaultLinkablePageLinkRetriever>();
+            services.TryAddTransient<ILinkablePageLinkRetriever, DefaultLinkablePageLinkRetriever>();
 
             return services;
         }
@@ -28,7 +28,7 @@ namespace XperienceCommunity.PageLinkTagHelpers
         public static IServiceCollection AddXperienceCommunityPageLinks<TCustomLinkablePageLinkRetriever>(this IServiceCollection services)
             where TCustomLinkablePageLinkRetriever : class, ILinkablePageLinkRetriever
         {
-            services.TryAddSingleton<ILinkablePageLinkRetriever, TCustomLinkablePageLinkRetriever>();
+            services.TryAddTransient<ILinkablePageLinkRetriever, TCustomLinkablePageLinkRetriever>();
 
             return services;
         }
@@ -43,7 +43,7 @@ namespace XperienceCommunity.PageLinkTagHelpers
         public static IServiceCollection AddXperienceCommunityPageLinksProtection<TCustomLinkablePageInventory>(this IServiceCollection services)
             where TCustomLinkablePageInventory : class, ILinkablePageInventory
         {
-            services.TryAddSingleton<ILinkablePageInventory, TCustomLinkablePageInventory>();
+            services.TryAddTransient<ILinkablePageInventory, TCustomLinkablePageInventory>();
 
             return services;
         }
