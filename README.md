@@ -1,4 +1,4 @@
-# Xperience Page Link Tag Helpers
+# Xperience Page Links
 
 [![GitHub Actions CI: Build](https://github.com/wiredviews/xperience-page-link-tag-helpers/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/wiredviews/xperience-page-link-tag-helpers/actions/workflows/ci.yml)
 
@@ -35,6 +35,10 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    > Populate the `Guid` values with the `NodeGUID` of each page in the content tree that you need to link to in your application.
 
    ```csharp
+   using XperienceCommunity.LinkablePages;
+   ```
+
+   ```csharp
    public namespace Sandbox.Shared
    {
       public class LinkablePage : ILinkablePage
@@ -60,6 +64,10 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    ```
 
 1. In the shared class library, create an implementation of the `ILinkablePageInventory` interface, which will be used to determine which Pages in the application should be protected:
+
+   ```csharp
+   using XperienceCommunity.LinkablePages;
+   ```
 
    ```csharp
    public class LinkablePageInventory : ILinkablePageInventory
@@ -97,6 +105,10 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
 1. Register the library with ASP.NET Core DI:
 
    ```csharp
+   using XperienceCommunity.LinkablePages;
+   ```
+
+   ```csharp
    public void ConfigureServices(IServiceCollection services)
    {
        // Use standard registration
@@ -114,6 +126,8 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
 1. Add the data protection custom module registration to your ASP.NET Core application (in `Startup.cs` or wherever you register your dependencies):
 
    ```csharp
+   using XperienceCommunity.LinkablePages;
+
    [assembly: RegisterModule(typeof(LinkablePageProtectionModule))]
    ```
 
@@ -129,6 +143,10 @@ This package is compatible with ASP.NET Core 3.1+ applications or libraries inte
    ```
 
 1. Create a custom module class in your CMS application to register the `LinkablePageProtectionModule` and the `ILinkablePageInventory` implementation:
+
+   ```csharp
+   using XperienceCommunity.LinkablePages;
+   ```
 
    ```csharp
    // Registers this custom module class

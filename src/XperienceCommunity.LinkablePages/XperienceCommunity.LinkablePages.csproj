@@ -3,14 +3,22 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Nullable>disable</Nullable>
+
+    <Description>
+      Provides abstraction and data protection for pages that can be linked to for Kentico Xperience 13.0 applications to help developers easily generate links to pages in the content tree.
+    </Description>
+
+    <Product>XperienceCommunity.LinkablePages</Product>
+    <Title>$(Product)</Title>
+    <PackageTags>$(PackageTags)</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Kentico.Xperience.Libraries" Version="[13.0.0, 13.1.0)" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

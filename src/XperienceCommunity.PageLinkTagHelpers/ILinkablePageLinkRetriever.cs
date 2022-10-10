@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CMS.DocumentEngine;
 using CMS.DocumentEngine.Routing;
@@ -12,7 +13,7 @@ namespace XperienceCommunity.PageLinkTagHelpers
     /// </summary>
     public interface ILinkablePageLinkRetriever
     {
-        Task<LinkablePageLinkResult?> RetrieveAsync(Guid nodeGUID);
+        Task<LinkablePageLinkResult?> RetrieveAsync(Guid nodeGUID, CancellationToken token = default);
     }
 
     /// <summary>
@@ -30,7 +31,7 @@ namespace XperienceCommunity.PageLinkTagHelpers
             this.pageUrlRetriever = pageUrlRetriever;
         }
 
-        public async Task<LinkablePageLinkResult?> RetrieveAsync(Guid nodeGUID)
+        public async Task<LinkablePageLinkResult?> RetrieveAsync(Guid nodeGUID, CancellationToken token = default)
         {
             var pages = await pageRetriever
                 .RetrieveAsync<TreeNode>(
@@ -39,7 +40,8 @@ namespace XperienceCommunity.PageLinkTagHelpers
                         // Optimize returned columns, .WithPageUrlPaths() will add back the ones it needs
                         .Columns(nameof(TreeNode.DocumentName))
                         .WithPageUrlPaths(),
-                    cache => cache.Key($"page-link|{nodeGUID}"));
+                    cache => cache.Key($"page-link|{nodeGUID}"),
+                    cancellationToken: token);
 
             var page = pages.FirstOrDefault();
 
